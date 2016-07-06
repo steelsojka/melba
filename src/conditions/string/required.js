@@ -7,8 +7,4 @@ export default class RequiredString extends RequiredAny {
   validate(value, ...args) {
     return isString(value) && value.length > 0;
   }
-
-  sanitize(value) {
-    return toString(value);
-  }
 };
