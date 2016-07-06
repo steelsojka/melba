@@ -1,15 +1,17 @@
-import isNil from 'lodash/isNil';
-import negate from 'lodash/negate';
+import assign from 'lodash/assign';
 
-import Condition from '../Condition';
+import Condition from '../../Condition';
 
 export default class RequiredAny extends Condition {
   constructor() {
     super();
 
     assign(this, {
-      validate: negate(isNil),
       priority: 20
     });
+  }
+
+  validate(value, state) {
+    return !state.isEmptyValue(value);
   }
 };

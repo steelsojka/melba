@@ -1,36 +1,41 @@
 import assign from 'lodash/assign';
+import cloneDeepWith from 'lodash/cloneDeepWith';
+import isArray from 'lodash/isArray';
+import some from 'lodash/some';
+
+import ResultCollector from './ResultCollector';
 
 export default class ValidationState {
-  constructor() {
+  constructor(state = {}) {
     assign(this, {
       root: null,
-      path: null,
-      invalid: [],
-      valid: []
-    });
+      path: [],
+      collector: null,
+      emptyValues: [null, undefined]
+    }, state);
+
+    if (!this.collector) {
+      this.collector = new ResultCollector();
+    }
   }
 
-  snapshot() {
-    return {
-      path: this.path,
-      root: this.root,
-      invalid: this.invalid.slice(0),
-      valid: this.valid.slice(0)
-    };
+  get isValid() {
+    return this.collector.rejected.length === 0;
   }
 
-  isInvalid(condition, state) {
-    this.invalid.push({ condition, state: state.snapshot() });
+  clone() {
+    return new ValidationState(cloneDeepWith(this, value => {
+      if (isArray(value)) {
+        return value.slice(0);
+      }
+
+      if (value !== this) {
+        return value;
+      }
+    }));
   }
 
-  isValid(condition, state) {
-    this.valid.push({ condition, state: state.snapshot() });
-  }
-
-  spawn() {
-    return assign(new ValidationState(), {
-      isInvalid: this.isInvalid.bind(this),
-      isValid: this.isValid.bind(this)
-    });
+  isEmptyValue(value) {
+    return some(this.emptyValues, val => val === value);
   }
 }

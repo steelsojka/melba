@@ -1,4 +1,5 @@
 import defaults from 'lodash/defaults';
+import isFunction from 'lodash/isFunction';
 
 export default class Condition {
   constructor() {
@@ -18,4 +19,14 @@ export default class Condition {
   getReturnValue(type) {
     return type;
   }
+
+  resolveValue(value, ...args) {
+    if (isFunction(value)) {
+      return value(...args);
+    }
+
+    return value;
+  }
+
+  modifyState() {}
 }

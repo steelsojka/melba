@@ -1,5 +1,7 @@
 import assign from 'lodash/assign';
 import sortBy from 'lodash/sortBy';
+import isObject from 'lodash/isObject';
+import forOwn from 'lodash/forOwn';
 
 import ValidationState from './ValidationState';
 
@@ -8,16 +10,27 @@ export default class Type {
     assign(this, {
       conditions: new Map()
     });
+
+    if (this.constructor.typeCondition) {
+      this.conditions.set('type', new this.constructor.typeCondition());
+    }
   }
 
   validate(value, state) {
     state = this.castState(value, state);
 
-    for (let { name, condition } of this.getConditionChain()) {
-      if (condition.validate(value, this)) {
-        state.isInvalid(condition, state);
+    const conditions = this.getConditionChain();
+    const { collector } = state;
+
+    for (let { name, condition } of conditions) {
+      condition.modifyState(state, value, this);
+    }
+
+    for (let { name, condition } of conditions) {
+      if (condition.validate(value, state, this)) {
+        collector.accept(condition, state);
       } else {
-        state.isValid(condition, state);
+        collector.reject(condition, state);
       }
     }
 
@@ -44,7 +57,17 @@ export default class Type {
     });
   }
 
+  isValid(value) {
+    return this.validate(value).isValid;
+  }
+
   static register(name, ConditionCtor) {
+    if (isObject(name)) {
+      forOwn(name, (value, key) => this.register(key, value));
+
+      return;
+    }
+
     this.prototype[name] = this.getApiFactory(name, ConditionCtor);
   }
 
