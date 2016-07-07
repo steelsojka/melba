@@ -24,7 +24,7 @@ export default class BooleanTypeCheck extends AnyTypeCheck {
       return false;
     }
 
-    state.collector.reject(this, state);
+    state.reject(this, state);
 
     return value;
   }

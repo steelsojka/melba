@@ -24,4 +24,9 @@ export default class ResultCollector {
   accept(condition: Condition, state: ValidationState): void {
     this.accepted.push(new ConditionResult(condition, state));
   }
+
+  merge(collector: ResultCollector): void {
+    collector.accepted.forEach((entry: ConditionResult) => this.accepted.push(entry));
+    collector.rejected.forEach((entry: ConditionResult) => this.rejected.push(entry));
+  }
 }

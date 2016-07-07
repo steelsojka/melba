@@ -2,6 +2,10 @@ import ski from './src';
 
 const myObj = ski.object({
   prop: ski.string().required(),
+  key: ski.any().some([
+    ski.string(),
+    ski.number()
+  ]),
   blorg: ski.object({
     prop2: ski.number()
   })
@@ -10,11 +14,10 @@ const myObj = ski.object({
 
 const result = myObj.validate({
   prop: 'test',
+  key: 123,
   blorg: {
-    prop2: null
+    prop2: 12
   }
-}, {
-  emptyValues: ['']
 });
 
 console.log(result.isValid);

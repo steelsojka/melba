@@ -20,7 +20,7 @@ export default class NumberTypeCheck extends AnyTypeCheck {
     const converted = parseFloat(value);
 
     if (!isFinite(converted)) {
-      state.collector.reject(this, state);
+      state.reject(this, state);
 
       return value;
     }

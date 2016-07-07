@@ -7,9 +7,12 @@ import some from 'lodash/some';
 
 import ResultCollector from './ResultCollector';
 
+import type Condition from './Condition';
+
 export default class ValidationState {
   root: any;
   path: string[];
+  typeCollector: ResultCollector;
   collector: ResultCollector;
   emptyValues: any[];
 
@@ -30,8 +33,20 @@ export default class ValidationState {
     return this.collector.rejected.length === 0;
   }
 
-  clone(): ValidationState {
-    return new ValidationState(cloneDeepWith(this, value => {
+  accept(condition: Condition) {
+    this.collector.accept(condition, this);
+  }
+
+  reject(condition: Condition) {
+    this.collector.reject(condition, this);
+  }
+
+  mergeResults(state: ValidationState): void {
+    this.collector.merge(state.collector);
+  }
+
+  clone(mixin: Object = {}): ValidationState {
+    const properties: Object = cloneDeepWith(this, value => {
       if (isArray(value)) {
         return value.slice(0);
       }
@@ -39,7 +54,9 @@ export default class ValidationState {
       if (value !== this) {
         return value;
       }
-    }));
+    });
+
+    return new ValidationState(Object.assign(properties, mixin));
   }
 
   isEmptyValue(value: any): boolean {

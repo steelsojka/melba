@@ -15,6 +15,7 @@ import NumberType from './types/NumberType';
 // Any
 import RequiredAny from './conditions/any/required';
 import DefaultAny from './conditions/any/default';
+import Some from './conditions/any/some';
 
 // String
 import RequiredString from './conditions/string/required';
@@ -34,7 +35,8 @@ import RequiredNumber from './conditions/number/required';
 // Register all conditions
 AnyType.registerAll({
   required: RequiredAny,
-  default: DefaultAny
+  default: DefaultAny,
+  some: Some
 });
 
 StringType.registerAll({

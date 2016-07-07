@@ -19,7 +19,7 @@ export default class ArrayTypeCheck extends AnyTypeCheck {
       return [...value];
     }
 
-    state.collector.reject(this, state);
+    state.reject(this, state);
 
     return value;
   }

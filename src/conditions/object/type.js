@@ -18,7 +18,7 @@ export default class ObjectTypeCheck extends AnyTypeCheck {
     }
 
     if (!this.typeCheck(value)) {
-      state.collector.reject(this, state);
+      state.reject(this, state);
     }
 
     return value;

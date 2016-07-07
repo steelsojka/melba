@@ -29,7 +29,6 @@ export default class Type {
     state = this.castState(value, state);
 
     const conditions = this.getConditionChain();
-    const { collector } = state;
 
     for (let { name, condition } of conditions) {
       condition.modifyState(state, value, this);
@@ -37,9 +36,9 @@ export default class Type {
 
     for (let { name, condition } of conditions) {
       if (condition.validate(value, state, this)) {
-        collector.accept(condition, state);
+        state.accept(condition, state);
       } else {
-        collector.reject(condition, state);
+        state.reject(condition, state);
       }
     }
 
