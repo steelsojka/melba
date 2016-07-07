@@ -8,6 +8,7 @@ import StringType from './types/StringType';
 import AnyType from './types/AnyType';
 import BooleanType from './types/BooleanType';
 import ArrayType from './types/ArrayType';
+import NumberType from './types/NumberType';
 
 // ******** Conditions ************ 
 
@@ -26,6 +27,9 @@ import RequiredBoolean from './conditions/boolean/required';
 
 // Array
 import RequiredArray from './conditions/array/required';
+
+// Number
+import RequiredNumber from './conditions/number/required';
 
 // Register all conditions
 AnyType.registerAll({
@@ -49,6 +53,10 @@ ArrayType.registerAll({
   required: RequiredArray
 });
 
+NumberType.registerAll({
+  required: RequiredNumber
+});
+
 // Register the types
 
 export default new Skima({
@@ -56,5 +64,6 @@ export default new Skima({
   string: StringType,
   any: AnyType,
   boolean: BooleanType,
-  array: ArrayType
+  array: ArrayType,
+  number: NumberType
 });

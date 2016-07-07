@@ -61,7 +61,7 @@ export default class Type {
       return state;
     }
 
-    return assign(new ValidationState(), {
+    return assign(new ValidationState(state), {
       root: value
     });
   }

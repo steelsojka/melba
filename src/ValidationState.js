@@ -13,7 +13,7 @@ export default class ValidationState {
   collector: ResultCollector;
   emptyValues: any[];
 
-  constructor(state: Object = {}) {
+  constructor(state: ?Object = {}) {
     assign(this, {
       root: null,
       path: [],

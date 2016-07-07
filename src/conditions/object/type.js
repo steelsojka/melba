@@ -8,11 +8,11 @@ import AnyTypeCheck from '../any/type';
 import type ValidationState from '../../ValidationState';
 
 export default class ObjectTypeCheck extends AnyTypeCheck {
-  typeCheck(value: any): boolean {
+  typeCheck(value: mixed): boolean {
     return isObject(value) && !isArray(value);
   }
 
-  sanitize(value: any, state: ValidationState): any {
+  sanitize(value: any, state: ValidationState): mixed {
     if (state.isEmptyValue(value)) {
       return value;
     }
