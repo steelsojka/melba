@@ -1,3 +1,5 @@
+// @flow
+
 import Skima from './Skima';
 
 // ************ Types *************
@@ -26,24 +28,24 @@ import RequiredBoolean from './conditions/boolean/required';
 import RequiredArray from './conditions/array/required';
 
 // Register all conditions
-AnyType.register({
+AnyType.registerAll({
   required: RequiredAny,
   default: DefaultAny
 });
 
-StringType.register({
+StringType.registerAll({
   required: RequiredString
 });
 
-ObjectType.register({
+ObjectType.registerAll({
   required: RequiredObject
 });
 
-BooleanType.register({
+BooleanType.registerAll({
   required: RequiredBoolean
 });
 
-ArrayType.register({
+ArrayType.registerAll({
   required: RequiredArray
 });
 

@@ -1,11 +1,17 @@
+// @flow
+
 import isBoolean from 'lodash/isBoolean';
 
+import AnyTypeCheck from '../any/type';
+
+import type ValidationState from '../../ValidationState';
+
 export default class BooleanTypeCheck extends AnyTypeCheck {
-  typeCheck(value) {
+  typeCheck(value: any): boolean {
     return isBoolean(value);
   }
 
-  sanitize(value, state) {
+  sanitize(value: any, state: ValidationState): any {
     if (state.isEmptyValue(value)) {
       return value;
     }
@@ -18,7 +24,7 @@ export default class BooleanTypeCheck extends AnyTypeCheck {
       return false;
     }
 
-    state.collector.reject(state, this);
+    state.collector.reject(this, state);
 
     return value;
   }

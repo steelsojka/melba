@@ -1,22 +1,31 @@
+// @flow
+
 import assign from 'lodash/assign';
 import sortBy from 'lodash/sortBy';
-import isObject from 'lodash/isObject';
 import forOwn from 'lodash/forOwn';
 
 import ValidationState from './ValidationState';
+import Condition from './Condition';
+
+import type { ConditionSubClass } from './Condition';
+
+type ConditionEntry = {
+  name: string;
+  condition: Condition;
+};
+
+export type TypeSubClass = Class<$Subtype<Type>>;
 
 export default class Type {
+  conditions: Map<string, Condition>;
+
   constructor() {
     assign(this, {
       conditions: new Map()
     });
-
-    if (this.constructor.typeCondition) {
-      this.conditions.set('type', new this.constructor.typeCondition());
-    }
   }
 
-  validate(value, state) {
+  validate(value: any, state: ?ValidationState): ValidationState {
     state = this.castState(value, state);
 
     const conditions = this.getConditionChain();
@@ -37,7 +46,7 @@ export default class Type {
     return state;
   }
 
-  getConditionChain() {
+  getConditionChain(): ConditionEntry[]  {
     const result = [];
 
     for (let [name, condition] of this.conditions) {
@@ -47,7 +56,7 @@ export default class Type {
     return sortBy(result, 'condition.priority');
   }
 
-  castState(value, state) {
+  castState(value: any, state: ?ValidationState): ValidationState  {
     if (state instanceof ValidationState) {
       return state;
     }
@@ -57,22 +66,22 @@ export default class Type {
     });
   }
 
-  isValid(value) {
+  isValid(value: any): boolean {
     return this.validate(value).isValid;
   }
 
-  static register(name, ConditionCtor) {
-    if (isObject(name)) {
-      forOwn(name, (value, key) => this.register(key, value));
-
-      return;
-    }
-
-    this.prototype[name] = this.getApiFactory(name, ConditionCtor);
+  static registerAll(conditions: {[key: string]: ConditionSubClass}) {
+    forOwn(conditions, (value, key) => this.register(key, value));
   }
 
-  static getApiFactory(name, ConditionCtor) {
-    return function apiFactory(...args) {
+  static register(name: string, ConditionCtor: ConditionSubClass): void {
+    const proto: Object = this.prototype;
+
+    proto[name] = this.getApiFactory(name, ConditionCtor);
+  }
+
+  static getApiFactory(name: string, ConditionCtor: ConditionSubClass): Function {
+    return function apiFactory(...args: any[]): any {
       const condition = new ConditionCtor(...args);
 
       this.conditions.set(name, condition);

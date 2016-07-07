@@ -1,17 +1,17 @@
-import assign from 'lodash/assign';
+// @flow
 
 import Condition from '../../Condition';
+
+import type ValidationState from '../../ValidationState';
 
 export default class RequiredAny extends Condition {
   constructor() {
     super();
 
-    assign(this, {
-      priority: 20
-    });
+    this.priority = 20;
   }
 
-  validate(value, state) {
+  validate(value: any, state: ValidationState): boolean {
     return !state.isEmptyValue(value);
   }
 };

@@ -1,14 +1,18 @@
+// @flow
+
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 
 import AnyTypeCheck from '../any/type';
 
+import type ValidationState from '../../ValidationState';
+
 export default class ObjectTypeCheck extends AnyTypeCheck {
-  typeCheck(value) {
+  typeCheck(value: any): boolean {
     return isObject(value) && !isArray(value);
   }
 
-  sanitize(value, state) {
+  sanitize(value: any, state: ValidationState): any {
     if (state.isEmptyValue(value)) {
       return value;
     }

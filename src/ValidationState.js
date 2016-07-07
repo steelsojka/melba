@@ -1,3 +1,5 @@
+// @flow
+
 import assign from 'lodash/assign';
 import cloneDeepWith from 'lodash/cloneDeepWith';
 import isArray from 'lodash/isArray';
@@ -6,7 +8,12 @@ import some from 'lodash/some';
 import ResultCollector from './ResultCollector';
 
 export default class ValidationState {
-  constructor(state = {}) {
+  root: any;
+  path: string[];
+  collector: ResultCollector;
+  emptyValues: any[];
+
+  constructor(state: Object = {}) {
     assign(this, {
       root: null,
       path: [],
@@ -19,11 +26,11 @@ export default class ValidationState {
     }
   }
 
-  get isValid() {
+  get isValid(): boolean {
     return this.collector.rejected.length === 0;
   }
 
-  clone() {
+  clone(): ValidationState {
     return new ValidationState(cloneDeepWith(this, value => {
       if (isArray(value)) {
         return value.slice(0);
@@ -35,7 +42,7 @@ export default class ValidationState {
     }));
   }
 
-  isEmptyValue(value) {
+  isEmptyValue(value: any): boolean {
     return some(this.emptyValues, val => val === value);
   }
 }

@@ -1,10 +1,11 @@
+// @flow
+
 import isString from 'lodash/isString';
-import toString from 'lodash/toString';
 
 import RequiredAny from '../any/required';
 
 export default class RequiredString extends RequiredAny {
-  validate(value, ...args) {
+  validate(value: any, ...args: any[]): boolean {
     return isString(value) && value.length > 0;
   }
 };
