@@ -25,6 +25,10 @@ export default class Condition {
     return value;
   }
 
+  install(name: string, initType: Type): void {
+    initType.conditions.set(name, this);
+  }
+
   getReturnValue(type: Type): any {
     return type;
   }

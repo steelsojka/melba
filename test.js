@@ -2,10 +2,12 @@ import ski from './src';
 
 const myObj = ski.object({
   prop: ski.string().required(),
-  key: ski.some([
-    ski.string(),
-    ski.number()
+  key: ski.when('prop', [
+    [ski.string().required(), ski.number().required()],
+    [() => true, ski.string().required()]
   ]),
+  list: ski.array()
+    .required(),
   blorg: ski.object({
     prop2: ski.number()
   })
@@ -14,7 +16,8 @@ const myObj = ski.object({
 
 const result = myObj.validate({
   prop: 'test',
-  key: 'test',
+  key: 123,
+  list: [],
   blorg: {
     prop2: 12
   }

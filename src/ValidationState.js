@@ -11,7 +11,9 @@ import type Condition from './Condition';
 
 export default class ValidationState {
   root: any;
+  value: any;
   path: string[];
+  container: ?Object;
   typeCollector: ResultCollector;
   collector: ResultCollector;
   emptyValues: any[];
@@ -20,6 +22,7 @@ export default class ValidationState {
     assign(this, {
       root: null,
       path: [],
+      value: null,
       collector: null,
       emptyValues: [null, undefined]
     }, state);
@@ -33,11 +36,11 @@ export default class ValidationState {
     return this.collector.rejected.length === 0;
   }
 
-  accept(condition: Condition) {
+  accept(condition: Condition): void {
     this.collector.accept(condition, this);
   }
 
-  reject(condition: Condition) {
+  reject(condition: Condition): void {
     this.collector.reject(condition, this);
   }
 

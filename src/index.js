@@ -14,51 +14,29 @@ import NumberType from './types/NumberType';
 // ******** Conditions ************ 
 
 // Any
-import RequiredAny from './conditions/any/required';
 import DefaultAny from './conditions/any/default';
-import Some from './conditions/any/some';
+import SomeAny from './conditions/any/some';
+import WhenAny from './conditions/any/when';
 
-// String
-import RequiredString from './conditions/string/required';
-
-// Object
-import RequiredObject from './conditions/object/required';
-
-// Boolean
-import RequiredBoolean from './conditions/boolean/required';
-
-// Array
-import RequiredArray from './conditions/array/required';
-
-// Number
-import RequiredNumber from './conditions/number/required';
+import * as anyConditions from './conditions/any';
+import * as stringConditions from './conditions/string';
+import * as objectConditions from './conditions/object';
+import * as booleanConditions from './conditions/boolean';
+import * as arrayConditions from './conditions/array';
+import * as numberConditions from './conditions/number';
 
 // Register all conditions
-AnyType.registerAll({
-  required: RequiredAny,
-  default: DefaultAny,
-  some: Some
+AnyType.registerAll(anyConditions);
+
+AnyType.register({
+  default: DefaultAny
 });
 
-StringType.registerAll({
-  required: RequiredString
-});
-
-ObjectType.registerAll({
-  required: RequiredObject
-});
-
-BooleanType.registerAll({
-  required: RequiredBoolean
-});
-
-ArrayType.registerAll({
-  required: RequiredArray
-});
-
-NumberType.registerAll({
-  required: RequiredNumber
-});
+StringType.registerAll(stringConditions);
+ObjectType.registerAll(objectConditions);
+BooleanType.registerAll(booleanConditions);
+ArrayType.registerAll(arrayConditions);
+NumberType.registerAll(numberConditions);
 
 // Register the types
 
@@ -69,5 +47,6 @@ export default new Skima({
   boolean: BooleanType,
   array: ArrayType,
   number: NumberType,
-  some: Type.createTypeFromCondition('some', Some)
+  some: AnyType.createTypeFromCondition('some', SomeAny),
+  when: AnyType.createTypeFromCondition('when', WhenAny)
 });

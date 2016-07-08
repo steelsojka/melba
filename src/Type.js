@@ -1,6 +1,5 @@
 // @flow
 
-import assign from 'lodash/assign';
 import sortBy from 'lodash/sortBy';
 import forOwn from 'lodash/forOwn';
 
@@ -20,7 +19,7 @@ export default class Type {
   conditions: Map<string, Condition>;
 
   constructor() {
-    assign(this, {
+    Object.assign(this, {
       conditions: new Map()
     });
   }
@@ -56,17 +55,17 @@ export default class Type {
   }
 
   castState(value: any, state: ?ValidationState): ValidationState  {
-    if (state instanceof ValidationState) {
-      return state;
+    if (!(state instanceof ValidationState)) {
+      state = Object.assign(new ValidationState(state), {
+        root: value
+      });
     }
 
-    return assign(new ValidationState(state), {
-      root: value
-    });
+    return Object.assign(state, { value });
   }
 
-  isValid(value: any): boolean {
-    return this.validate(value).isValid;
+  isValid(value: any, state: ?ValidationState): boolean {
+    return this.validate(value, state).isValid;
   }
 
   static registerAll(conditions: {[key: string]: ConditionSubClass}) {
@@ -83,18 +82,20 @@ export default class Type {
     return function apiFactory(...args: any[]): any {
       const condition = new ConditionCtor(...args);
 
-      this.conditions.set(name, condition);
+      condition.install(name, this);
 
       return condition.getReturnValue(this);
     }
   }
 
   static createTypeFromCondition(name: string, ConditionCtor: ConditionSubClass): TypeSubClass {
-    return class extends Type {
+    return class extends this {
       constructor(...args: any[]) {
-        super();
+        super(...args);
 
-        this.conditions.set(name, new ConditionCtor(...args));
+        const condition = new ConditionCtor(...args);
+
+        condition.install(name, this);
       }
     }
   }
