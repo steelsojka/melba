@@ -2,7 +2,7 @@ import ski from './src';
 
 const myObj = ski.object({
   prop: ski.string().required(),
-  key: ski.any().some([
+  key: ski.some([
     ski.string(),
     ski.number()
   ]),
@@ -14,7 +14,7 @@ const myObj = ski.object({
 
 const result = myObj.validate({
   prop: 'test',
-  key: 123,
+  key: 'test',
   blorg: {
     prop2: 12
   }
@@ -22,4 +22,5 @@ const result = myObj.validate({
 
 console.log(result.isValid);
 
+console.log(result.collector.rejected.length);
 result.collector.rejected.forEach(entry => console.log('rejected', entry));

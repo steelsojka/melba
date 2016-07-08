@@ -20,17 +20,6 @@ export default class SomeCondition extends Condition {
       return childType.validate(value, state.clone({ collector: new ResultCollector() }));
     });
 
-    for (let result of results) {
-      if (result.isValid) {
-        state.accept(this);
-        state.mergeResults(result);
-
-        return true;
-      }
-    }
-
-    state.reject(this);
-
-    return false;
+    return results.some(result => result.isValid);
   }
 }

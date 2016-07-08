@@ -1,9 +1,9 @@
 // @flow
 
-import Type from '../Type';
+import AnyType from './AnyType';
 import BooleanTypeCheck from '../conditions/boolean/type';
 
-export default class BooleanType extends Type {
+export default class BooleanType extends AnyType {
   constructor() {
     super();
 

@@ -1,9 +1,9 @@
 // @flow
 
-import Type from '../Type';
+import AnyType from './AnyType';
 import ArrayTypeCheck from '../conditions/array/type';
 
-export default class ArrayType extends Type {
+export default class ArrayType extends AnyType {
   constructor() {
     super();
 

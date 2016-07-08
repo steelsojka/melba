@@ -1,9 +1,9 @@
 // @flow
 
-import Type from '../Type';
+import AnyType from './AnyType';
 import NumberTypeCheck from '../conditions/number/type';
 
-export default class NumberType extends Type {
+export default class NumberType extends AnyType {
   constructor() {
     super();
 

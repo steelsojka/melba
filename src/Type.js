@@ -88,4 +88,14 @@ export default class Type {
       return condition.getReturnValue(this);
     }
   }
+
+  static createTypeFromCondition(name: string, ConditionCtor: ConditionSubClass): TypeSubClass {
+    return class extends Type {
+      constructor(...args: any[]) {
+        super();
+
+        this.conditions.set(name, new ConditionCtor(...args));
+      }
+    }
+  }
 }

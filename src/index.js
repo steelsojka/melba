@@ -3,6 +3,7 @@
 import Skima from './Skima';
 
 // ************ Types *************
+import Type from './Type';
 import ObjectType from './types/ObjectType';
 import StringType from './types/StringType';
 import AnyType from './types/AnyType';
@@ -67,5 +68,6 @@ export default new Skima({
   any: AnyType,
   boolean: BooleanType,
   array: ArrayType,
-  number: NumberType
+  number: NumberType,
+  some: Type.createTypeFromCondition('some', Some)
 });

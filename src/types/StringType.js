@@ -9,4 +9,4 @@ export default class StringType extends AnyType {
 
     this.conditions.set('type', new StringTypeCheck());
   }
-}
+} 
