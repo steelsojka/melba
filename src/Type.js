@@ -3,6 +3,7 @@
 import sortBy from 'lodash/sortBy';
 import forOwn from 'lodash/forOwn';
 
+import ConditionMap from './ConditionMap';
 import ValidationState from './ValidationState';
 import Condition from './Condition';
 
@@ -16,11 +17,11 @@ type ConditionEntry = {
 export type TypeSubClass = Class<$Subtype<Type>>;
 
 export default class Type {
-  conditions: Map<string, Condition>;
+  conditions: ConditionMap;
 
   constructor() {
     Object.assign(this, {
-      conditions: new Map()
+      conditions: new ConditionMap()
     });
   }
 
@@ -47,7 +48,7 @@ export default class Type {
   getConditionChain(): ConditionEntry[]  {
     const result = [];
 
-    for (let [name, condition] of this.conditions) {
+    for (let [name, condition] of this.conditions.iterate()) {
       result.push({ name, condition });
     }
 

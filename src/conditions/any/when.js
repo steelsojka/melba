@@ -9,13 +9,14 @@ import type ValidationState from '../../ValidationState';
 
 export default class When extends Condition {
   pathParser: PathParser;
-  typePairs: Array<Array<Type|Function>>;
+  typePairs: Array<[Type|Function, Type]>;
 
-  constructor(path: string|string[], typePairs: Array<Array<Type|Function>>) {
+  constructor(path: string|string[], typePairs: Array<[Type|Function, Type]>) {
     super();
 
     Object.assign(this, {
       typePairs,
+      multiples: true,
       pathParser: new PathParser(path),
     });
   }

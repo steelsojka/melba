@@ -10,10 +10,12 @@ export type ConditionSubClass = Class<$Subtype<Condition>>;
 
 export default class Condition {
   priority: number;
+  multiples: boolean;
 
   constructor() {
     defaults(this, {
-      priority: 0
+      priority: 0,
+      multiples: false
     });
   }
 
