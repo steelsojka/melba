@@ -17,6 +17,8 @@ import NumberType from './types/NumberType';
 import DefaultAny from './conditions/any/default';
 import SomeAny from './conditions/any/some';
 import WhenAny from './conditions/any/when';
+import EveryAny from './conditions/any/every';
+import RequiredAny from './conditions/any/required';
 
 import * as anyConditions from './conditions/any';
 import * as stringConditions from './conditions/string';
@@ -48,5 +50,7 @@ export default new Skima({
   array: ArrayType,
   number: NumberType,
   some: AnyType.createTypeFromCondition('some', SomeAny),
-  when: AnyType.createTypeFromCondition('when', WhenAny)
+  when: AnyType.createTypeFromCondition('when', WhenAny),
+  every: AnyType.createTypeFromCondition('every', EveryAny),
+  required: AnyType.createTypeFromCondition('required', RequiredAny)
 });

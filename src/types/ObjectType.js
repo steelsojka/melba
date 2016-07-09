@@ -3,6 +3,8 @@
 import forOwn from 'lodash/forOwn';
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
+import last from 'lodash/last';
+import set from 'lodash/set';
 
 import AnyType from './AnyType';
 import ObjectTypeCheck from '../conditions/object/type';
@@ -30,14 +32,34 @@ export default class ObjectType extends AnyType {
       return castState;
     }
 
-    forOwn(this.schema, (type, key) => {
-      const childState = castState.clone({ container: value });
-
-      childState.path.push(key);
-
-      type.validate(get(value, key), childState);
+    this.forEachType(value, castState, (type, pathValue, childState) => {
+      type.validate(pathValue, childState);
     });
 
     return castState;
+  }
+
+  sanitize(value: Object, state: ?ValidationState): ValidationState {
+    const castState = super.sanitize(value, state);
+
+    castState.sanitized = {};
+
+    this.forEachType(value, castState, (type, pathValue, childState) => {
+      const { sanitized } = type.sanitize(pathValue, childState);
+
+      set(castState.sanitized, last(childState.path), sanitized);
+    });
+
+    return castState;
+  }
+
+  forEachType(container: Object, state: ValidationState, iterator: Function): void {
+    forOwn(this.schema, (type, key) => {
+      const childState = state.clone({ container });
+
+      childState.path.push(key);
+
+      iterator(type, get(container, key), childState);
+    });
   }
 }

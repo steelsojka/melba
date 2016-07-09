@@ -45,6 +45,21 @@ export default class Type {
     return state;
   }
 
+  sanitize(value: any, state: ?ValidationState): ValidationState {
+    state = this.castState(value, state);
+
+    const conditions = this.getConditionChain();
+    let sanitized: ?mixed = null;
+
+    for (let { name, condition } of conditions) {
+      sanitized = condition.sanitize(value, state);
+    }
+
+    state.sanitized = sanitized;
+
+    return state;
+  }
+
   getConditionChain(): ConditionEntry[]  {
     const result = [];
 

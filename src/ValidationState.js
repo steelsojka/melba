@@ -12,6 +12,7 @@ import type Condition from './Condition';
 export default class ValidationState {
   root: any;
   value: any;
+  sanitized: any;
   path: string[];
   container: ?Object;
   typeCollector: ResultCollector;
@@ -24,6 +25,7 @@ export default class ValidationState {
       path: [],
       value: null,
       collector: null,
+      sanitized: null,
       emptyValues: [null, undefined]
     }, state);
 

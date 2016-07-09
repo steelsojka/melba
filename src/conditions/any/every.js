@@ -6,7 +6,7 @@ import type Type from '../../Type';
 import type ValidationState from '../../ValidationState';
 
 
-export default class SomeCondition extends Condition {
+export default class EveryCondition extends Condition {
   types: Type[];
 
   constructor(types: Type[]) {
@@ -23,6 +23,6 @@ export default class SomeCondition extends Condition {
       return childType.validate(value, state.clone({ collector: new ResultCollector() }));
     });
 
-    return results.some(result => result.isValid);
+    return results.every(result => result.isValid);
   }
 }

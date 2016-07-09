@@ -1,10 +1,9 @@
 import ski from './src';
 
 const myObj = ski.object({
-  prop: ski.string().required(),
-  key: ski.when('prop', [
-    [ski.string().required(), ski.number().required()],
-    [() => true, ski.string().required()]
+  prop: ski.any(),
+  key: ski.string().when('prop', [
+    [ski.string().required(), ski.required()],
   ]),
   list: ski.array()
     .required(),
@@ -14,9 +13,16 @@ const myObj = ski.object({
     .required()
 });
 
+// const result = ski.object({ key: ski.boolean() })
+//   .sanitize({
+//     key: []
+//   });
+
+// console.log(result);
+
 const result = myObj.validate({
-  prop: 'test',
-  key: 123,
+  prop: 'jasda',
+  key: '',
   list: [],
   blorg: {
     prop2: 12
