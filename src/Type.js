@@ -2,6 +2,8 @@
 
 import sortBy from 'lodash/sortBy';
 import forOwn from 'lodash/forOwn';
+import assign from 'lodash/assign';
+import cloneDeepWith from 'lodash/cloneDeepWith';
 
 import ConditionMap from './ConditionMap';
 import ValidationState from './ValidationState';
@@ -84,6 +86,24 @@ export default class Type {
     return this.validate(value, state).isValid;
   }
 
+  clone(): Type {
+    const props = cloneDeepWith(this, value => {
+      if (Array.isArray(value)) {
+        return value.slice(0);
+      }
+
+      if (value instanceof ConditionMap) {
+        return value.clone();
+      }
+
+      if (value !== this) {
+        return value;
+      }
+    });
+
+    return assign(new this.constructor(), props);
+  }
+
   static registerAll(conditions: {[key: string]: ConditionSubClass}) {
     forOwn(conditions, (value, key) => this.register(key, value));
   }
@@ -96,11 +116,12 @@ export default class Type {
 
   static getApiFactory(name: string, ConditionCtor: ConditionSubClass): Function {
     return function apiFactory(...args: any[]): any {
+      const newType = this.clone();
       const condition = new ConditionCtor(...args);
 
-      condition.install(name, this);
+      condition.install(name, newType);
 
-      return condition.getReturnValue(this);
+      return condition.getReturnValue(newType);
     }
   }
 

@@ -26,12 +26,6 @@ export default class ObjectType extends AnyType {
   validate(value: Object, state: ?ValidationState): ValidationState {
     const castState = super.validate(value, state);
 
-    if (!isObject(value)) {
-      castState.reject(this);
-
-      return castState;
-    }
-
     this.forEachType(value, castState, (type, pathValue, childState) => {
       type.validate(pathValue, childState);
     });

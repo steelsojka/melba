@@ -1,5 +1,7 @@
 // @flow
 
+import assign from 'lodash/assign';
+
 import Skima from './Skima';
 
 // ************ Types *************
@@ -26,6 +28,7 @@ import * as objectConditions from './conditions/object';
 import * as booleanConditions from './conditions/boolean';
 import * as arrayConditions from './conditions/array';
 import * as numberConditions from './conditions/number';
+import * as collectionConditions from './conditions/collection';
 
 // Register all conditions
 AnyType.registerAll(anyConditions);
@@ -34,10 +37,10 @@ AnyType.register({
   default: DefaultAny
 });
 
-StringType.registerAll(stringConditions);
-ObjectType.registerAll(objectConditions);
+StringType.registerAll(assign({}, stringConditions, collectionConditions));
+ObjectType.registerAll(assign({}, objectConditions, collectionConditions));
+ArrayType.registerAll(assign({}, arrayConditions, collectionConditions));
 BooleanType.registerAll(booleanConditions);
-ArrayType.registerAll(arrayConditions);
 NumberType.registerAll(numberConditions);
 
 // Register the types

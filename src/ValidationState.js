@@ -15,7 +15,6 @@ export default class ValidationState {
   sanitized: any;
   path: string[];
   container: ?Object;
-  typeCollector: ResultCollector;
   collector: ResultCollector;
   emptyValues: any[];
 

@@ -13,6 +13,10 @@ const myObj = ski.object({
     .required()
 });
 
+const myArray = ski.string().length(1);
+
+console.log(myArray.isValid('as'));
+
 // const result = ski.object({ key: ski.boolean() })
 //   .sanitize({
 //     key: []
@@ -22,7 +26,7 @@ const myObj = ski.object({
 
 const result = myObj.validate({
   prop: 'jasda',
-  key: '',
+  key: null,
   list: [],
   blorg: {
     prop2: 12

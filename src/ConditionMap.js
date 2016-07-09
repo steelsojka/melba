@@ -38,6 +38,16 @@ export default class ConditionMap {
     this.map.delete(name);
   }
 
+  clone(): ConditionMap {
+    const newMap = new this.constructor();
+
+    for (let [name, conditionList]: [string, Condition[]] of this.map) {
+      newMap.map.set(name, conditionList.slice(0));
+    }
+
+    return newMap;
+  }
+
   * iterate(): Iterator<[string, Condition]> {
     for (let [name, conditions]: [string, Condition[]] of this.map) {
       for (let condition: Condition of conditions) {
