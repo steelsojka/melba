@@ -16,11 +16,13 @@ export default class MaxCondition extends Condition {
     this.max = max;
   }
 
-  validate(value: any, state: ValidationState): boolean {
+  validate(value: any, state: ValidationState): Error|void {
     if (state.isEmptyValue(value)) {
-      return true;
+      return;
     }
 
-    return isCollection(value) && size(value) <= this.max;
+    if (!(isCollection(value) && size(value) <= this.max)) {
+      return this.reject(`Value must have a size less than ${this.max}`, state);
+    }
   }
 }

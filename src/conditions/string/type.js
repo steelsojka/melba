@@ -11,7 +11,7 @@ export default class StringTypeCheck extends AnyTypeCheck {
     return isString(value);
   }
 
-  sanitize(value: any, state: ValidationState): any {
+  convert(value: any, state: ValidationState): any {
     if (state.isEmptyValue(value)) {
       return value;
     }

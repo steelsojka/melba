@@ -10,21 +10,21 @@ import ResultCollector from './ResultCollector';
 import type Condition from './Condition';
 
 export default class ValidationState {
-  root: any;
+  context: Object;
   value: any;
-  sanitized: any;
   path: string[];
   container: ?Object;
   collector: ResultCollector;
+  result: any;
   emptyValues: any[];
 
   constructor(state: ?Object = {}) {
     assign(this, {
-      root: null,
+      context: {},
       path: [],
       value: null,
+      result: null,
       collector: null,
-      sanitized: null,
       emptyValues: [null, undefined]
     }, state);
 

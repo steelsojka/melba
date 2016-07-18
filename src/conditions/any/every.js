@@ -18,11 +18,13 @@ export default class EveryCondition extends Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): boolean {
+  validate(value: any, state: ValidationState): Error|void {
     const results: ValidationState[] = this.types.map(childType => {
       return childType.validate(value, state.clone({ collector: new ResultCollector() }));
     });
 
-    return results.every(result => result.isValid);
+    if (!results.every(result => result.isValid)) {
+      return this.reject('Value did not satisfy all every condition.', state);
+    }
   }
 }

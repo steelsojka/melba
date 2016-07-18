@@ -8,6 +8,7 @@ import cloneDeepWith from 'lodash/cloneDeepWith';
 import ConditionMap from './ConditionMap';
 import ValidationState from './ValidationState';
 import Condition from './Condition';
+import ValidationError from './ValidationError';
 
 import type { ConditionSubClass } from './Condition';
 
@@ -28,38 +29,49 @@ export default class Type {
   }
 
   validate(value: any, state: ?ValidationState): ValidationState {
-    state = this.castState(value, state);
+    let lastValidValue = value;
+    let coercedValue = value;
+    let castState = this.castState(value, state);
 
     const conditions = this.getConditionChain();
 
     for (let { name, condition } of conditions) {
-      condition.modifyState(state, value, this);
+      condition.modifyState(castState, value, this);
     }
 
     for (let { name, condition } of conditions) {
-      if (condition.validate(value, state, this)) {
-        state.accept(condition, state);
-      } else {
-        state.reject(condition, state);
+      let validationResult;
+      let isValid = true;
+
+      if (castState.convert) {
+        coercedValue = condition.convert(coercedValue, castState);
+
+        if (coercedValue instanceof ValidationError) {
+          coercedValue = lastValidValue;
+          isValid = false;
+          castState.reject(condition, castState, coercedValue);
+        }
       }
+
+      if (isValid) {
+        validationResult = condition.validate(coercedValue, castState, this);
+
+        if (validationResult instanceof ValidationError) {
+          isValid = false;
+          castState.reject(condition, castState, validationResult);
+        }
+      }
+
+      if (!isValid && castState.abortEarly) {
+        break;
+      }
+
+      lastValidValue = coercedValue;
     }
 
-    return state;
-  }
+    castState.result = lastValidValue;
 
-  sanitize(value: any, state: ?ValidationState): ValidationState {
-    state = this.castState(value, state);
-
-    const conditions = this.getConditionChain();
-    let sanitized: ?mixed = null;
-
-    for (let { name, condition } of conditions) {
-      sanitized = condition.sanitize(value, state);
-    }
-
-    state.sanitized = sanitized;
-
-    return state;
+    return castState;
   }
 
   getConditionChain(): ConditionEntry[]  {
@@ -74,9 +86,7 @@ export default class Type {
 
   castState(value: any, state: ?ValidationState): ValidationState  {
     if (!(state instanceof ValidationState)) {
-      state = Object.assign(new ValidationState(state), {
-        root: value
-      });
+      state = new ValidationState(state);
     }
 
     return Object.assign(state, { value });

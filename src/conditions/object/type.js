@@ -12,13 +12,13 @@ export default class ObjectTypeCheck extends AnyTypeCheck {
     return isObject(value) && !isArray(value);
   }
 
-  sanitize(value: any, state: ValidationState): mixed {
+  convert(value: any, state: ValidationState): any {
     if (state.isEmptyValue(value)) {
       return value;
     }
 
     if (!this.typeCheck(value)) {
-      state.reject(this, state);
+      return this.castFailError(value, 'Object', state);
     }
 
     return value;

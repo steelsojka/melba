@@ -5,17 +5,17 @@ import get from 'lodash/get';
 
 import type ValidationState from './ValidationState';
 
-const ROOT_SYMBOL = '$';
+const CONTEXT_SYMBOL = '$';
 
 export default class PathParser {
   path: string|string[];
-  fromRoot: boolean;
+  fromContext: boolean;
   parsedPath: string;
 
   constructor(path: string|string[]) {
     Object.assign(this, {
       path,
-      fromRoot: false
+      fromContext: false
     });
 
     this.parse();
@@ -30,8 +30,8 @@ export default class PathParser {
       splitPath = this.path;
     }
 
-    if (splitPath[0] === ROOT_SYMBOL) {
-      this.fromRoot = true;
+    if (splitPath[0] === CONTEXT_SYMBOL) {
+      this.fromContext = true;
 
       splitPath.shift();
     }
@@ -42,8 +42,8 @@ export default class PathParser {
   getFromState(state: ValidationState): any {
     let { container } = state;
 
-    if (this.fromRoot)  {
-      container = state.root;
+    if (this.fromContext)  {
+      container = state.context;
     }
 
     return get(container, this.parsedPath);

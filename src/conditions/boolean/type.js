@@ -11,7 +11,7 @@ export default class BooleanTypeCheck extends AnyTypeCheck {
     return isBoolean(value);
   }
 
-  sanitize(value: any, state: ValidationState): any {
+  convert(value: any, state: ValidationState): any {
     if (state.isEmptyValue(value)) {
       return value;
     }
@@ -24,8 +24,6 @@ export default class BooleanTypeCheck extends AnyTypeCheck {
       return false;
     }
 
-    state.reject(this, state);
-
-    return value;
+    return this.castFailError(value, 'Boolean', state);
   }
 }

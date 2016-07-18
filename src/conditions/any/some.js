@@ -18,11 +18,13 @@ export default class SomeCondition extends Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): boolean {
+  validate(value: any, state: ValidationState): Error|void {
     const results: ValidationState[] = this.types.map(childType => {
       return childType.validate(value, state.clone({ collector: new ResultCollector() }));
     });
 
-    return results.some(result => result.isValid);
+    if(!results.some(result => result.isValid)) {
+      return this.reject('Value did not satisfy any condition.', state);
+    }
   }
 }

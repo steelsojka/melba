@@ -13,7 +13,7 @@ export default class Default extends Condition {
     this.defaultValue = defaultValue;
   }
 
-  sanitize(value: any, state: ValidationState, ...args: any[]): any {
+  convert(value: any, state: ValidationState, ...args: any[]): any {
     if (state.isEmptyValue(value)) {
       return this.resolveValue(this.defaultValue, ...args);
     }

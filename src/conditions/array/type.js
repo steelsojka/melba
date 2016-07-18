@@ -10,7 +10,7 @@ export default class ArrayTypeCheck extends AnyTypeCheck {
     return isArray(value);
   }
 
-  sanitize(value: any, state: ValidationState): any {
+  convert(value: any, state: ValidationState): any {
     if (state.isEmptyValue(value)) {
       return value;
     }
@@ -19,8 +19,6 @@ export default class ArrayTypeCheck extends AnyTypeCheck {
       return [...value];
     }
 
-    state.reject(this, state);
-
-    return value;
+    return this.castFailError(value, 'Array', state);
   }
 };

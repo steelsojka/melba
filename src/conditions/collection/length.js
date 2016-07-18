@@ -16,11 +16,13 @@ export default class LengthCondition extends Condition {
     this.length = length;
   }
 
-  validate(value: any, state: ValidationState): boolean {
+  validate(value: any, state: ValidationState): Error|void {
     if (state.isEmptyValue(value)) {
-      return true;
+      return;
     }
 
-    return isCollection(value) && size(value) === this.length;
+    if (!(isCollection(value) && size(value) === this.length)) {
+      return this.reject(`Value must be of size ${this.length}`, state);
+    }
   }
 }

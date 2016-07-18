@@ -21,7 +21,7 @@ export default class When extends Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): boolean {
+  validate(value: any, state: ValidationState): Error|void {
     const lhsVal = this.pathParser.getFromState(state);
 
     for (let [lhsType, rhsType] of this.typePairs) {
@@ -30,8 +30,6 @@ export default class When extends Condition {
         break;
       }
     }
-
-    return true;
   }
 
   resolveType(pairType: Type|Function, value: any, state: ValidationState): boolean {

@@ -12,7 +12,7 @@ export default class NumberTypeCheck extends AnyTypeCheck {
     return isFinite(value);
   }
 
-  sanitize(value: mixed, state: ValidationState): mixed {
+  convert(value: any, state: ValidationState): any {
     if (state.isEmptyValue(value)) {
       return value;
     }
@@ -20,9 +20,7 @@ export default class NumberTypeCheck extends AnyTypeCheck {
     const converted = parseFloat(value);
 
     if (!isFinite(converted)) {
-      state.reject(this, state);
-
-      return value;
+      return this.castFailError(value, 'Number', state);
     }
 
     return converted;

@@ -3,9 +3,9 @@
 import defaults from 'lodash/defaults';
 import isFunction from 'lodash/isFunction';
 
+import ValidationError from './ValidationError';
 import type Type from './Type';
 import type ValidationState from './ValidationState';
-
 export type ConditionSubClass = Class<$Subtype<Condition>>;
 
 export default class Condition {
@@ -19,11 +19,11 @@ export default class Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): boolean {
+  validate(value: any, state: ValidationState): any {
     return true;
   }
 
-  sanitize(value: any, state: ValidationState): any {
+  convert(value: any, state: ValidationState): any {
     return value;
   }
 
@@ -35,12 +35,16 @@ export default class Condition {
     return type;
   }
 
-  resolveValue(value: any, ...args: any[]) {
+  resolveValue(value: any, ...args: any[]): any {
     if (isFunction(value)) {
       return value(...args);
     }
 
     return value;
+  }
+
+  reject(message: string, state: ValidationState): ValidationError {
+    return new ValidationError(message, state);
   }
 
   modifyState() {}

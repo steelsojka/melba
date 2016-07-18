@@ -11,7 +11,9 @@ export default class RequiredAny extends Condition {
     this.priority = 20;
   }
 
-  validate(value: any, state: ValidationState): boolean {
-    return !state.isEmptyValue(value);
+  validate(value: any, state: ValidationState): Error|void {
+    if (!state.isEmptyValue(value)) {
+      return this.reject('Field is required', state);
+    }
   }
 };
