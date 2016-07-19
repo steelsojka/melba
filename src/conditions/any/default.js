@@ -2,7 +2,8 @@
 
 import Condition from '../../Condition';
 
-import ValidationState from '../../ValidationState';
+import type ValidationState from '../../ValidationState';
+import type { TypeSubClass } from '../../Type';
 
 export default class Default extends Condition {
   defaultValue: any;
@@ -13,9 +14,9 @@ export default class Default extends Condition {
     this.defaultValue = defaultValue;
   }
 
-  convert(value: any, state: ValidationState, ...args: any[]): any {
-    if (state.isEmptyValue(value)) {
-      return this.resolveValue(this.defaultValue, ...args);
+  convert(value: any, state: ValidationState, type: TypeSubClass): any {
+    if (type.isEmptyValue(value, state)) {
+      return this.resolveValue(this.defaultValue);
     }
 
     return value;

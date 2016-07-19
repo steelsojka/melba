@@ -4,14 +4,14 @@ import Condition from '../../Condition';
 import PathParser from '../../PathParser';
 import ResultCollector from '../../ResultCollector';
 
-import type Type from '../../Type';
+import type { TypeSubClass } from '../../Type';
 import type ValidationState from '../../ValidationState';
 
 export default class When extends Condition {
   pathParser: PathParser;
-  typePairs: Array<[Type|Function, Type]>;
+  typePairs: Array<[TypeSubClass|Function, TypeSubClass]>;
 
-  constructor(path: string|string[], typePairs: Array<[Type|Function, Type]>) {
+  constructor(path: string|string[], typePairs: Array<[TypeSubClass|Function, TypeSubClass]>) {
     super();
 
     Object.assign(this, {

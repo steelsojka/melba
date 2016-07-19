@@ -23,12 +23,16 @@ export default class Condition {
     return true;
   }
 
+  coerce(value: any, state: ValidationState): any {
+    return value;
+  }
+
   convert(value: any, state: ValidationState): any {
     return value;
   }
 
   install(name: string, initType: Type): void {
-    initType.conditions.set(name, this);
+    initType._conditions.set(name, this);
   }
 
   getReturnValue(type: Type): any {

@@ -2,12 +2,11 @@
 
 import Condition from '../../Condition';
 import ResultCollector from '../../ResultCollector';
-import type Type from '../../Type';
+import type { TypeSubClass } from '../../Type';
 import type ValidationState from '../../ValidationState';
 
-
 export default class SomeCondition extends Condition {
-  types: Type[];
+  types: TypeSubClass[];
 
   constructor(types: Type[]) {
     super();

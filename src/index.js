@@ -2,8 +2,6 @@
 
 import assign from 'lodash/assign';
 
-import Skima from './Skima';
-
 // ************ Types *************
 import Type from './Type';
 import ObjectType from './types/ObjectType';
@@ -15,12 +13,7 @@ import NumberType from './types/NumberType';
 
 // ******** Conditions ************ 
 
-// Any
 import DefaultAny from './conditions/any/default';
-import SomeAny from './conditions/any/some';
-import WhenAny from './conditions/any/when';
-import EveryAny from './conditions/any/every';
-import RequiredAny from './conditions/any/required';
 
 import * as anyConditions from './conditions/any';
 import * as stringConditions from './conditions/string';
@@ -31,29 +24,30 @@ import * as numberConditions from './conditions/number';
 import * as collectionConditions from './conditions/collection';
 
 // Register all conditions
-AnyType.registerAll(anyConditions);
-
-AnyType.register({
+AnyType.extend(assign({
   default: DefaultAny
-});
+}, anyConditions));
 
-StringType.registerAll(assign({}, stringConditions, collectionConditions));
-ObjectType.registerAll(assign({}, objectConditions, collectionConditions));
-ArrayType.registerAll(assign({}, arrayConditions, collectionConditions));
-BooleanType.registerAll(booleanConditions);
-NumberType.registerAll(numberConditions);
+StringType.extend(assign({}, stringConditions, collectionConditions));
+ObjectType.extend(assign({}, objectConditions, collectionConditions));
+ArrayType.extend(assign({}, arrayConditions, collectionConditions));
+BooleanType.extend(booleanConditions);
+NumberType.extend(numberConditions);
+
+const any = new AnyType();
 
 // Register the types
-
-export default new Skima({
-  object: ObjectType,
-  string: StringType,
-  any: AnyType,
-  boolean: BooleanType,
-  array: ArrayType,
-  number: NumberType,
-  some: AnyType.createTypeFromCondition('some', SomeAny),
-  when: AnyType.createTypeFromCondition('when', WhenAny),
-  every: AnyType.createTypeFromCondition('every', EveryAny),
-  required: AnyType.createTypeFromCondition('required', RequiredAny)
+export default assign(any, {
+  any: createType(AnyType),
+  object: createType(ObjectType),
+  string: createType(StringType),
+  array: createType(ArrayType),
+  number: createType(NumberType),
+  boolean: createType(BooleanType),
 });
+
+function createType(TypeCtor) {
+  return function(...args) {
+    return new TypeCtor(...args);
+  };
+}

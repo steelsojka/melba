@@ -1,7 +1,7 @@
 // @flow
 
 import assign from 'lodash/assign';
-import cloneDeepWith from 'lodash/cloneDeepWith';
+import clone from 'lodash/clone';
 import isArray from 'lodash/isArray';
 import some from 'lodash/some';
 
@@ -10,60 +10,65 @@ import ResultCollector from './ResultCollector';
 import type Condition from './Condition';
 
 export default class ValidationState {
-  context: Object;
-  value: any;
-  path: string[];
-  container: ?Object;
-  collector: ResultCollector;
   result: any;
-  emptyValues: any[];
+  convert: boolean;
+  _context: Object;
+  _value: any;
+  _path: string[];
+  _container: ?Object;
+  _collector: ResultCollector;
+  _emptyValues: any[];
 
   constructor(state: ?Object = {}) {
     assign(this, {
-      context: {},
-      path: [],
-      value: null,
       result: null,
-      collector: null,
-      emptyValues: [null, undefined]
+      convert: true,
+      _context: {},
+      _path: [],
+      _value: null,
+      _collector: null,
+      _emptyValues: []
     }, state);
 
-    if (!this.collector) {
-      this.collector = new ResultCollector();
+    if (!this._collector) {
+      this._collector = new ResultCollector();
     }
   }
 
   get isValid(): boolean {
-    return this.collector.rejected.length === 0;
+    return this._collector.rejected.length === 0;
   }
 
   accept(condition: Condition): void {
-    this.collector.accept(condition, this);
+    this._collector.accept(condition, this);
   }
 
-  reject(condition: Condition): void {
-    this.collector.reject(condition, this);
+  reject(condition: Condition, error: Error): void {
+    this._collector.reject(condition, this, error);
   }
 
   mergeResults(state: ValidationState): void {
-    this.collector.merge(state.collector);
+    this._collector.merge(state._collector);
   }
 
   clone(mixin: Object = {}): ValidationState {
-    const properties: Object = cloneDeepWith(this, value => {
-      if (isArray(value)) {
-        return value.slice(0);
-      }
-
-      if (value !== this) {
-        return value;
-      }
-    });
+    const properties = {
+      result: this._result,
+      convert: this.convert,
+      _context: this._context,
+      _path: clone(this._path),
+      _value: this._value,
+      _collector: this._collector,
+      _emptyValues: this._emptyValues.slice(0)
+    };
 
     return new ValidationState(Object.assign(properties, mixin));
   }
 
-  isEmptyValue(value: any): boolean {
-    return some(this.emptyValues, val => val === value);
+  spawn() {
+    return this.clone({
+      _collector: new ResultCollector(),
+      _emptyValues: []
+    });
   }
 }

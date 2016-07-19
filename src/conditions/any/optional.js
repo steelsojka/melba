@@ -2,10 +2,10 @@
 
 import Condition from '../../Condition';
 
-import type Type from '../../Type';
+import type { TypeSubClass } from '../../Type';
 
 export default class OptionalAny extends Condition {
-  install(name: string, type: Type): void {
+  install(name: string, type: TypeSubClass): void {
     type.conditions.delete('required');
   }
 };

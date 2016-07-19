@@ -17,8 +17,8 @@ export default class ResultCollector {
     });
   }
 
-  reject(condition: Condition, state: ValidationState): void {
-    this.rejected.push(new ConditionResult(condition, state));
+  reject(condition: Condition, state: ValidationState, error: Error): void {
+    this.rejected.push(new ConditionResult(condition, state, error));
   }
 
   accept(condition: Condition, state: ValidationState): void {

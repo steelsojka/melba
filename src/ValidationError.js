@@ -3,6 +3,8 @@ export default class ValidationError extends Error {
   state: ValidationState;
 
   constructor(message: string, state: ValidationState) {
+    super(message);
+
     Object.assign(this, { message, state });
   }
 }

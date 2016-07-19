@@ -4,6 +4,7 @@ import sortBy from 'lodash/sortBy';
 import forOwn from 'lodash/forOwn';
 import assign from 'lodash/assign';
 import cloneDeepWith from 'lodash/cloneDeepWith';
+import some from 'lodash/some';
 
 import ConditionMap from './ConditionMap';
 import ValidationState from './ValidationState';
@@ -20,17 +21,17 @@ type ConditionEntry = {
 export type TypeSubClass = Class<$Subtype<Type>>;
 
 export default class Type {
-  conditions: ConditionMap;
+  _conditions: ConditionMap;
 
   constructor() {
     Object.assign(this, {
-      conditions: new ConditionMap()
+      _conditions: new ConditionMap()
     });
   }
 
   validate(value: any, state: ?ValidationState): ValidationState {
     let lastValidValue = value;
-    let coercedValue = value;
+    let nextValue = value;
     let castState = this.castState(value, state);
 
     const conditions = this.getConditionChain();
@@ -43,22 +44,29 @@ export default class Type {
       let validationResult;
       let isValid = true;
 
-      if (castState.convert) {
-        coercedValue = condition.convert(coercedValue, castState);
+      const coercedValue = condition.coerce(nextValue, castState, this);
 
-        if (coercedValue instanceof ValidationError) {
-          coercedValue = lastValidValue;
-          isValid = false;
-          castState.reject(condition, castState, coercedValue);
-        }
+      if (coercedValue instanceof Error) {
+        castState.reject(condition, coercedValue);
+        isValid = false;
       }
 
       if (isValid) {
         validationResult = condition.validate(coercedValue, castState, this);
 
-        if (validationResult instanceof ValidationError) {
+        if (validationResult instanceof Error) {
+          castState.reject(condition, validationResult);
           isValid = false;
-          castState.reject(condition, castState, validationResult);
+        }
+      }
+
+      if (isValid && castState.convert) {
+        nextValue = condition.convert(coercedValue, castState, this);
+
+        if (coercedValue instanceof Error) {
+          castState.reject(condition, coercedValue);
+          nextValue = lastValidValue;
+          isValid = false;
         }
       }
 
@@ -66,7 +74,7 @@ export default class Type {
         break;
       }
 
-      lastValidValue = coercedValue;
+      lastValidValue = nextValue;
     }
 
     castState.result = lastValidValue;
@@ -77,7 +85,7 @@ export default class Type {
   getConditionChain(): ConditionEntry[]  {
     const result = [];
 
-    for (let [name, condition] of this.conditions.iterate()) {
+    for (let [name, condition] of this._conditions.iterate()) {
       result.push({ name, condition });
     }
 
@@ -89,7 +97,7 @@ export default class Type {
       state = new ValidationState(state);
     }
 
-    return Object.assign(state, { value });
+    return Object.assign(state, { _value: value });
   }
 
   isValid(value: any, state: ?ValidationState): boolean {
@@ -114,14 +122,22 @@ export default class Type {
     return assign(new this.constructor(), props);
   }
 
-  static registerAll(conditions: {[key: string]: ConditionSubClass}) {
-    forOwn(conditions, (value, key) => this.register(key, value));
+  isEmptyValue(value: any, state: ValidationState): boolean {
+    if (value === undefined) {
+      return true;
+    }
+
+    return some(state._emptyValues, val => {
+      return val instanceof Type ? val.isValid(value, state.spawn()) : val === value;
+    });
   }
 
-  static register(name: string, ConditionCtor: ConditionSubClass): void {
+  static extend(conditions: {[key: string]: ConditionSubClass}) {
     const proto: Object = this.prototype;
 
-    proto[name] = this.getApiFactory(name, ConditionCtor);
+    forOwn(conditions, (ConditionCtor, name) => {
+      proto[name] = this.getApiFactory(name, ConditionCtor);
+    });
   }
 
   static getApiFactory(name: string, ConditionCtor: ConditionSubClass): Function {

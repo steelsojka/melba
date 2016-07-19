@@ -6,8 +6,9 @@ import type ValidationState from './ValidationState';
 export default class ConditionResult {
   condition: Condition;
   state: ValidationState;
+  error: ?Error;
 
-  constructor(condition: Condition, state: ValidationState) {
-    Object.assign(this, { condition, state });
+  constructor(condition: Condition, state: ValidationState, error: ?Error) {
+    Object.assign(this, { condition, state, error });
   }
 }
