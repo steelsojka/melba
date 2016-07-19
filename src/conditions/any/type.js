@@ -4,9 +4,11 @@ import Condition from '../../Condition';
 
 import type ValidationState from '../../ValidationState';
 import type ValidationError from '../../ValidationError';
-import type { TypeSubClass } from '../../Type';
+import type Type from '../../Type';
 
 export default class AnyTypeCheck extends Condition {
+  typeName: string;
+
   constructor() {
     super();
 
@@ -21,7 +23,7 @@ export default class AnyTypeCheck extends Condition {
     return this.reject(`Can not cast value ${value} to type`, state);
   }
 
-  validate(value: any, state: ValidationState, type: TypeSubClass): Error|void {
+  validate(value: any, state: ValidationState, type: Type): Error|void {
     if (type.isEmptyValue(value, state)) {
       return;
     }

@@ -5,10 +5,10 @@ import isString from 'lodash/isString';
 import AnyTypeCheck from '../any/type';
 
 import type ValidationState from '../../ValidationState';
-import type { TypeSubClass } from '../../Type';
+import type Type from '../../Type';
 
 export default class StringTypeCheck extends AnyTypeCheck {
-  get typeName() {
+  get typeName(): string {
     return 'String';
   }
 
@@ -16,7 +16,7 @@ export default class StringTypeCheck extends AnyTypeCheck {
     return isString(value);
   }
 
-  convert(value: any, state: ValidationState, type: TypeSubClass): any {
+  convert(value: any, state: ValidationState, type: Type): any {
     if (type.isEmptyValue(value, state)) {
       return value;
     }

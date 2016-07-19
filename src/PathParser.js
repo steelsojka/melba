@@ -40,12 +40,12 @@ export default class PathParser {
   }
 
   getFromState(state: ValidationState): any {
-    let { container } = state;
+    let { _container } = state;
 
     if (this.fromContext)  {
-      container = state.context;
+      _container = state._context;
     }
 
-    return get(container, this.parsedPath);
+    return get(_container, this.parsedPath);
   }
 }

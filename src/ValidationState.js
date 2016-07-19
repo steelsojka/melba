@@ -8,10 +8,12 @@ import some from 'lodash/some';
 import ResultCollector from './ResultCollector';
 
 import type Condition from './Condition';
+import type ValidationError from './ValidationError';
 
 export default class ValidationState {
   result: any;
   convert: boolean;
+  abortEarly: boolean;
   _context: Object;
   _value: any;
   _path: string[];
@@ -23,6 +25,7 @@ export default class ValidationState {
     assign(this, {
       result: null,
       convert: true,
+      abortEarly: true,
       _context: {},
       _path: [],
       _value: null,
@@ -39,6 +42,10 @@ export default class ValidationState {
     return this._collector.rejected.length === 0;
   }
 
+  get errors(): ValidationError[] {
+    return this._collector.rejected.map(res => res.error);
+  }
+
   accept(condition: Condition): void {
     this._collector.accept(condition, this);
   }
@@ -53,8 +60,9 @@ export default class ValidationState {
 
   clone(mixin: Object = {}): ValidationState {
     const properties = {
-      result: this._result,
+      result: this.result,
       convert: this.convert,
+      abortEarly: this.abortEarly,
       _context: this._context,
       _path: clone(this._path),
       _value: this._value,

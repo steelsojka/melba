@@ -4,14 +4,14 @@ import Condition from '../../Condition';
 import PathParser from '../../PathParser';
 import ResultCollector from '../../ResultCollector';
 
-import type { TypeSubClass } from '../../Type';
+import type Type from '../../Type';
 import type ValidationState from '../../ValidationState';
 
 export default class When extends Condition {
   pathParser: PathParser;
-  typePairs: Array<[TypeSubClass|Function, TypeSubClass]>;
+  typePairs: Array<[Type|Function, Type]>;
 
-  constructor(path: string|string[], typePairs: Array<[TypeSubClass|Function, TypeSubClass]>) {
+  constructor(path: string|string[], typePairs: Array<[Type|Function, Type]>) {
     super();
 
     Object.assign(this, {
@@ -21,7 +21,7 @@ export default class When extends Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): Error|void {
+  validate(value: any, state: ValidationState, type: Type): Error|void {
     const lhsVal = this.pathParser.getFromState(state);
 
     for (let [lhsType, rhsType] of this.typePairs) {

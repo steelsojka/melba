@@ -19,15 +19,13 @@ export default class Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): any {
-    return true;
-  }
+  validate(value: any, state: ValidationState, type: Type): Error|void {}
 
-  coerce(value: any, state: ValidationState): any {
+  coerce(value: any, state: ValidationState, type: Type): any {
     return value;
   }
 
-  convert(value: any, state: ValidationState): any {
+  convert(value: any, state: ValidationState, type: Type): any {
     return value;
   }
 
@@ -51,5 +49,5 @@ export default class Condition {
     return new ValidationError(message, state);
   }
 
-  modifyState() {}
+  modifyState(state: ValidationState, value: any, type: Type): void {}
 }

@@ -18,7 +18,7 @@ export default class EveryCondition extends Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): Error|void {
+  validate(value: any, state: ValidationState, type: Type): Error|void {
     const results: ValidationState[] = this.types.map(childType => {
       return childType.validate(value, state.clone({ collector: new ResultCollector() }));
     });

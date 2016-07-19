@@ -2,11 +2,11 @@
 
 import Condition from '../../Condition';
 import ResultCollector from '../../ResultCollector';
-import type { TypeSubClass } from '../../Type';
+import type Type from '../../Type';
 import type ValidationState from '../../ValidationState';
 
 export default class SomeCondition extends Condition {
-  types: TypeSubClass[];
+  types: Type[];
 
   constructor(types: Type[]) {
     super();
@@ -17,7 +17,7 @@ export default class SomeCondition extends Condition {
     });
   }
 
-  validate(value: any, state: ValidationState): Error|void {
+  validate(value: any, state: ValidationState, type: Type): Error|void {
     const results: ValidationState[] = this.types.map(childType => {
       return childType.validate(value, state.clone({ collector: new ResultCollector() }));
     });

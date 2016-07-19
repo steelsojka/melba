@@ -4,14 +4,14 @@ import isObject from 'lodash/isObject';
 import AnyTypeCheck from '../any/type';
 
 import type ValidationState from '../../ValidationState';
-import type { TypeSubClass } from '../../Type';
+import type Type from '../../Type';
 
 export default class ArrayTypeCheck extends AnyTypeCheck {
   typeCheck(value: any): boolean {
     return isArray(value);
   }
 
-  convert(value: any, state: ValidationState, type: TypeSubClass): any {
+  convert(value: any, state: ValidationState, type: Type): any {
     if (type.isEmptyValue(value, state)) {
       return value;
     }

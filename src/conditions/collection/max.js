@@ -6,6 +6,7 @@ import Condition from '../../Condition';
 import isCollection from '../../utils/isCollection';
 
 import type ValidationState from '../../ValidationState';
+import type Type from '../../Type';
 
 export default class MaxCondition extends Condition {
   max: number;
@@ -16,8 +17,8 @@ export default class MaxCondition extends Condition {
     this.max = max;
   }
 
-  validate(value: any, state: ValidationState): Error|void {
-    if (state.isEmptyValue(value)) {
+  validate(value: any, state: ValidationState, type: Type): Error|void {
+    if (type.isEmptyValue(value, state)) {
       return;
     }
 
